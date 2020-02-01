@@ -3,7 +3,14 @@
 
 import sqlite3
 import os
+import re
 
+# 验证邮箱是否合法
+def is_valid_email(email):
+    if re.findall(r'^\w+@(\w+.)+(com|cn|net)$',email):
+        return True
+    else :
+        return False
 
 # 数据库操作类
 class DBTool(object):
