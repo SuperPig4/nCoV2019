@@ -1,0 +1,5 @@
+.env
+.vscode
+database_test.db
+__pycache__
+logs.txt

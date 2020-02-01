@@ -1,0 +1,44 @@
+<html lang = "">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        .container{ width:359px; margin:0 auto; display:flex; align-items: center; height:100%;}
+        .container .t{ width:100%; margin:0px; list-style-type:none; display:flex; justify-content:space-between; flex-wrap:wrap;}
+        .container .t>div{ flex-grow:1; border-right:solid 1px red; border-bottom: solid 1px red;}
+        .container .t>div p{ text-align: center; }
+        .container .t>div p:first-child{ font-size:28px; font-weight: bold;}
+        .container .t>div .red{color:red;}
+        .container .t>div .yellow{color:#f7ab1a;}
+        .container .t>div .green{color:green;}
+        .container .t>div .gray{color:gray;}
+        .container .tx{ padding:0px 20px; width:100%; }
+        .container .update-date{ font-size:18px; margin-bottom: 20px; text-align: center;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tx">
+            <div class="update-date">截至-{{time}}</div>
+            <div class="t">
+                <div>
+                    <p class="red">{{confirm}}</p>
+                    <p>全国确诊</p>
+                </div>
+                <div>
+                    <p class="yellow">{{suspect}}</p>
+                    <p>疑似病例</p>
+                </div>
+                <div>
+                    <p class="green">{{cure}}</p>
+                    <p>治愈人数</p>
+                </div>
+                <div>
+                    <p class="gray">{{dead}}</p>
+                    <p>死亡人数</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
