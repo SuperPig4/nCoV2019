@@ -1,7 +1,8 @@
 # 2019nCoV
 
 #### 介绍
-获得疫情最新状况
+获得疫情最新状况<br/>
+第一时间获得疫情消息<br/>
 
 #### 软件架构
 python3<br>
@@ -18,3 +19,7 @@ Server.py      启动http服务
 
 ### 注意
 1.根据.env-template文件提示配置<br>
+
+### 效果图
+![1YmN4O.png](https://s2.ax1x.com/2020/02/02/1YmN4O.png)
+![1YmrDI.png](https://s2.ax1x.com/2020/02/02/1YmrDI.png)
