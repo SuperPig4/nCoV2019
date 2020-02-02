@@ -26,10 +26,10 @@ def get() :
     # 判断是否重复
     md5Handle = hashlib.md5()
     # md5Handle.update(json.dumps(info['chinaTotal']).encode(encoding='utf-8'))
-    md5Str = info['chinaTotal']['confirm'] + info['chinaTotal']['suspect'] + info['chinaTotal']['dead'] + info['chinaTotal']['heal']
+    md5Str = str(info['chinaTotal']['confirm'] + info['chinaTotal']['suspect'] + info['chinaTotal']['dead'] + info['chinaTotal']['heal'])
     md5Handle.update(md5Str.encode(encoding='utf-8'))
     md5 = md5Handle.hexdigest()
-   
+    
     db = Ulits.DBTool()
     dataIsAdd = db.executeQuery("SELECT * FROM info WHERE md5=?" ,(md5,))
     if len(dataIsAdd.fetchall()) > 0 :
@@ -51,7 +51,7 @@ def send() :
     db = Ulits.DBTool()
     fetch = db.executeQuery("SELECT * FROM info order by id desc limit 1",())
     info = fetch.fetchall()
-
+    raise Exception("data empty", 1004)
     if (len(info) > 0) == False :
         raise Exception("data empty", 1004)
     elif info[0][5] != 0 :
@@ -76,11 +76,11 @@ def send() :
     htmlFp.close()
 
     chinaTotal = infoContent['chinaTotal']
-    html = html.replace('{{confirm}}', chinaTotal['confirm'])
-    html = html.replace('{{suspect}}', chinaTotal['suspect'])
-    html = html.replace('{{cure}}', chinaTotal['heal'])
-    html = html.replace('{{dead}}', chinaTotal['dead'])
-    html = html.replace('{{time}}', infoContent['lastUpdateTime'])
+    html = html.replace('{{confirm}}', str(chinaTotal['confirm']))
+    html = html.replace('{{suspect}}', str(chinaTotal['suspect']))
+    html = html.replace('{{cure}}', str(chinaTotal['heal']))
+    html = html.replace('{{dead}}', str(chinaTotal['dead']))
+    html = html.replace('{{time}}', str(infoContent['lastUpdateTime']))
 
     email.title = '新型冠状肺炎-最新动态'
     email.content = html

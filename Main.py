@@ -19,9 +19,9 @@ def update() :
     except Exception as identifier:
         # 非重复错误代码则记录
         if identifier.args[1] == 1002 :
-            LOGGER.warning(identifier.args[0] + '-' + str(identifier.args[1]))
+            LOGGER.warning(str(identifier.args))
         else :
-            LOGGER.error(identifier.args[0] + '-' + str(identifier.args[1]))
+            LOGGER.error(str(identifier.args))
 cli.add_command(update)
 
 # 手动执行-发送
@@ -33,7 +33,7 @@ def send() :
             LOGGER.warning('send_fail_ids:'+json.dumps(result))
     except Exception as identifier:
         # 非重复错误代码则记录
-        LOGGER.error(identifier.args[0] + '-' + str(identifier.args[1]))
+        LOGGER.error(str(identifier.args))
 cli.add_command(send)
 
 # 自动
@@ -44,9 +44,9 @@ def auto() :
     except Exception as identifier:
         # 非重复错误代码则记录
         if identifier.args[1] == 1002 :
-            LOGGER.warning(identifier.args[0] + '-' + str(identifier.args[1]))
+            LOGGER.warning(str(identifier.args))
         else :
-            LOGGER.error(identifier.args[0] + '-' + str(identifier.args[1]))
+            LOGGER.error(str(identifier.args))
     else:
         # 发送订阅
         try:
@@ -55,7 +55,7 @@ def auto() :
                 LOGGER.warning('send_fail_ids:'+json.dumps(result))
         except Exception as identifier:
             # 非重复错误代码则记录
-            LOGGER.error(identifier.args[0] + '-' + str(identifier.args[1]))
+            LOGGER.error(str(identifier.args))
 cli.add_command(auto)
 
 if __name__ == "__main__":
