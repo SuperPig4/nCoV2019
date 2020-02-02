@@ -9,9 +9,11 @@ import sqlite3
 import requests
 import time
 import hashlib
+import os
 import json
 from . import Ulits
 from .Email import Main as EmailMain, QQ as EmailQQ
+import urllib
 
 # 获得数据
 def get() :
@@ -51,7 +53,7 @@ def send() :
     db = Ulits.DBTool()
     fetch = db.executeQuery("SELECT * FROM info order by id desc limit 1",())
     info = fetch.fetchall()
-    raise Exception("data empty", 1004)
+
     if (len(info) > 0) == False :
         raise Exception("data empty", 1004)
     elif info[0][5] != 0 :
@@ -59,12 +61,7 @@ def send() :
     
     info = info[0]
     infoContent = json.loads(info[1])
-    infoContent = json.loads(infoContent['data'])
-    # print(type(infoContent['data']))
-    # print(infoContent['chinaTotal'])
-
-    # 获得所有邮件
-    fetch = db.executeQuery("SELECT * FROM emails where is_notice == 1",())
+    infoContent = json.loads(infoContent['data'])    
 
     QQ = EmailQQ.QQClass()
     email = EmailMain.MainClass()
@@ -82,16 +79,61 @@ def send() :
     html = html.replace('{{dead}}', str(chinaTotal['dead']))
     html = html.replace('{{time}}', str(infoContent['lastUpdateTime']))
 
+    # 距离上次新增
+    confirmNew = 0
+    suspectNew = 0
+    cureNew = 0
+    deadNew = 0
+
+    # 获得最后一次get的数据
+    fetch = db.executeQuery("SELECT * FROM info where id !=? order by id desc limit 1",(info[0],))
+    oldInfo = fetch.fetchall()
+    if len(oldInfo) > 0 :
+        oldInfo = oldInfo[0]
+        infoContent = json.loads(oldInfo[1])
+        infoContent = json.loads(infoContent['data'])   
+        oldChinaTotal = infoContent['chinaTotal']
+
+        confirmNew = chinaTotal['confirm'] - oldChinaTotal['confirm']
+        suspectNew = chinaTotal['suspect'] - oldChinaTotal['suspect']
+        cureNew = chinaTotal['heal'] - oldChinaTotal['heal']
+        deadNew = chinaTotal['dead'] - oldChinaTotal['dead']
+    
+    html = html.replace('{{confirm_new}}', str(confirmNew))
+    html = html.replace('{{suspect_new}}', str(suspectNew))
+    html = html.replace('{{cure_new}}', str(cureNew))
+    html = html.replace('{{dead_new}}', str(deadNew))
+
     email.title = '新型冠状肺炎-最新动态'
     email.content = html
 
     logFailLog = []
+    logSucLog = []
     logTime = time.time()
+
+    # 获得所有邮件
+    aes = Ulits.USE_AES()
+    fetch = db.executeQuery("SELECT * FROM emails where is_notice == 1",())
     for row in fetch :
-        if email.send(row[1]) :
-            db.executeUpdate("UPDATE emails SET last_send_time = ? WHERE id =?", [(logTime, row[0])])
+        # 生成取消链接
+        cancelUrl = os.environ.get('DOMAIN_NAME')
+        if cancelUrl == None :
+            cancelUrl = 'https://gitee.com/first_pig/nCoV2019'
         else :
+            cancelUrl = 'http://' + cancelUrl + '/cancel?html=1&code=' + urllib.parse.quote(aes.encrypt(row[1]))
+        # 赋值定制内容
+        email.content = html.replace('{{cancel_url}}', str(cancelUrl))
+        try:
+            if email.send(row[1]) :
+                logSucLog.append(row[0])
+            else :
+                logFailLog.append(row[0])
+        except Exception as identifier:
             logFailLog.append(row[0])
+
+    # 更新用户信息
+    if len(logSucLog) > 0 :
+        db.executeUpdate(("UPDATE emails SET send_count = send_count + 1, last_send_time = ? WHERE id in (%s)" % ",".join(str(i) for i in logSucLog)), ([logTime],))
 
     # 更新标记
     db.executeUpdate("UPDATE info SET is_send = 1, send_time=? WHERE id =?", [(logTime, info[0])])

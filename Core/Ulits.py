@@ -41,7 +41,7 @@ class USE_AES:
         key = bytes(key, encoding="utf8")
         while len(key) % 16 != 0:
             key += b'\0'
-            print("to_16")
+            # print("to_16")
         return key  # 返回bytes
 
     def aes(self):

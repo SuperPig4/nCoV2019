@@ -13,6 +13,8 @@
         .container .t>div .gray{color:gray;}
         .container .tx{ padding:0px 20px; width:100%; }
         .container .update-date{ font-size:18px; margin-bottom: 20px; text-align: center;}
+        .container .cancel{ width:100px; margin:0 auto; padding:8px 10px; border-radius: 80px; background:#999; color:#fff; margin-top: 20px; text-align: center;}
+        .container .cancel a{  color:#fff; }
     </style>
 </head>
 <body>
@@ -22,23 +24,29 @@
             <div class="t">
                 <div>
                     <p class="red">{{confirm}}</p>
+                    <p class="red">新增:{{confirm_new}}</p>
                     <p>全国确诊</p>
                 </div>
                 <div>
                     <p class="yellow">{{suspect}}</p>
+                    <p class="yellow">新增:{{suspect_new}}</p>
                     <p>疑似病例</p>
                 </div>
                 <div>
                     <p class="green">{{cure}}</p>
+                    <p class="green">新增:{{cure_new}}</p>
                     <p>治愈人数</p>
                 </div>
                 <div>
                     <p class="gray">{{dead}}</p>
+                    <p class="gray">新增:{{dead_new}}</p>
                     <p>死亡人数</p>
                 </div>
             </div>
+            <div class="cancel">
+                <a href="{{cancel_url}}" >取消订阅</a>
+            </div>
         </div>
-        
     </div>
 </body>
 </html>

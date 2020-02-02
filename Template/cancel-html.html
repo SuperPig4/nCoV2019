@@ -1,0 +1,32 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>退订</title>
+</head>
+
+<body>
+    <script>
+        var r = confirm('{{text}}\n\r是否关闭该页面')
+        if (r) {
+            if (navigator.userAgent.indexOf('MSIE') > 0) { // close IE
+                if (navigator.userAgent.indexOf('MSIE 6.0') > 0) {
+                    window.opener = null;
+                    window.close();
+                } else {
+                    window.open('', '_top');
+                    window.top.close();
+                }
+            } else { // close chrome;It is effective when it is only one.
+                window.opener = null;
+                window.open('', '_self');
+                window.close();
+            }
+        } else {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+
+</html>

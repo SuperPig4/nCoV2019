@@ -15,7 +15,7 @@ class Resquest(BaseHTTPRequestHandler):
     def do_GET(self):
         
         self.send_response(200)
-        self.send_header('Content-type', 'text/html')
+        self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
 
         if '?' in self.path :
@@ -51,6 +51,7 @@ class Resquest(BaseHTTPRequestHandler):
                     db.close()
                 self.wfile.write(json.dumps(data).encode())
             except Exception as identifier:
+                print(identifier)
                 self.send_error(404)
 
         # 取消订阅
@@ -74,8 +75,17 @@ class Resquest(BaseHTTPRequestHandler):
                         data['msg'] = '邮箱不合法'
                 else:
                     data['msg'] = '标识符不存在'
-                self.wfile.write(json.dumps(data).encode())
+
+                if ('html' in params) :
+                    htmlFp = open('Template/cancel-html.html','r',encoding='utf-8')
+                    html = htmlFp.read()
+                    htmlFp.close()
+                    html = html.replace('{{text}}', str(data['msg']))
+                    self.wfile.write(html.encode())
+                else :
+                    self.wfile.write(json.dumps(data).encode())
             except Exception as identifier:
+                print(identifier)
                 self.send_error(404)
         else :
             htmlFp = open('Template/index.html','r',encoding='utf-8')
