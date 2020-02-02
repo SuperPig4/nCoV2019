@@ -9,13 +9,13 @@ import time
 from Core import Ulits
 
 data = {'msg': '', 'code':0}
-host = ('localhost', 8888)
+host = ('0.0.0.0', 58760)
 
 class Resquest(BaseHTTPRequestHandler):
     def do_GET(self):
         
         self.send_response(200)
-        self.send_header('Content-type', 'text/html	')
+        self.send_header('Content-type', 'text/html')
         self.end_headers()
 
         if '?' in self.path :
@@ -33,7 +33,7 @@ class Resquest(BaseHTTPRequestHandler):
                 elif Ulits.is_valid_email(params['email']) == False :
                     data['msg'] = '邮箱不合法'
                 else :
-                    data['msg'] = 'ok'
+                    data['msg'] = '订阅成功,疫情有最新动态第一时间推送到您的邮箱\n\r邮件内支持退订'
                     data['code'] = 1
                     email = params['email']
                     db = Ulits.DBTool()
@@ -77,6 +77,11 @@ class Resquest(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps(data).encode())
             except Exception as identifier:
                 self.send_error(404)
+        else :
+            htmlFp = open('Template/index.html','r',encoding='utf-8')
+            html = htmlFp.read()
+            htmlFp.close()
+            self.wfile.write(html.encode())
                 
 
 if __name__ == '__main__':
